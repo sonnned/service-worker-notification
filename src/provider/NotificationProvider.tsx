@@ -1,9 +1,9 @@
 import { type ReactNode, useEffect } from "preact/compat";
 // import { messaging } from "../firebase";
 // import { getToken, onMessage } from "firebase/messaging";
-import { messaging, onMessageListener } from "../firebase";
-import { getToken } from "firebase/messaging";
-import { useStore } from "@nanostores/preact";
+// import { messaging } from "../firebase";
+// import { getToken } from "firebase/messaging";
+// import { useStore } from "@nanostores/preact";
 import { currentStatus } from "../store/currentStatus";
 
 interface Notification {
@@ -11,29 +11,29 @@ interface Notification {
 }
 
 const NotificationProvider = ({ children }: Notification) => {
-  const $currentStatus = useStore(currentStatus);
+  // const $currentStatus = useStore(currentStatus);
 
-  const requestPermission = async () => {
-    console.log("Requesting permission...");
-    if (Notification.permission === "granted") {
-      console.log("Permission granted.");
-      return getToken(messaging, {
-        vapidKey: "BPBuppg0evzZutUL4I6SyROk2byA4IJBEFXcfIaVIvdZnv4rciuL8SC5DZBiknDtWeqz6FqY-aMHmb3KlF0yN2Q"
-      }).then((currentToken) => {
-        if (currentToken) {
-          console.log("Token: ", currentToken);
-          currentStatus.set({
-            ...$currentStatus,
-            notificationToken: currentToken
-          })
-        } else {
-          console.log("No registration token available. Request permission to generate one.");
-        }
-      }).catch((err) => {
-        console.log("An error occurred while retrieving token. ", err);
-      });
-    }
-  }
+  // const requestPermission = async () => {
+  //   console.log("Requesting permission...");
+  //   if (Notification.permission === "granted") {
+  //     console.log("Permission granted.");
+  //     return getToken(messaging, {
+  //       vapidKey: "BPBuppg0evzZutUL4I6SyROk2byA4IJBEFXcfIaVIvdZnv4rciuL8SC5DZBiknDtWeqz6FqY-aMHmb3KlF0yN2Q"
+  //     }).then((currentToken) => {
+  //       if (currentToken) {
+  //         console.log("Token: ", currentToken);
+  //         currentStatus.set({
+  //           ...$currentStatus,
+  //           notificationToken: currentToken
+  //         })
+  //       } else {
+  //         console.log("No registration token available. Request permission to generate one.");
+  //       }
+  //     }).catch((err) => {
+  //       console.log("An error occurred while retrieving token. ", err);
+  //     });
+  //   }
+  // }
 
   useEffect(() => {
     // requestPermission()

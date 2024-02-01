@@ -21,6 +21,7 @@ const FetchAllUsers = () => {
   const $socketStatus = useStore(socketStatus);
   const $currentStatus = useStore(currentStatus);
   const { isConnected } = useConnectSocket();
+  console.log($allUsersStatus, $socketStatus, $currentStatus);
 
   const fetchAllUsers = async () => {
     const response = await fetch("http://localhost:3000/users");

@@ -1,10 +1,11 @@
 import { io } from "socket.io-client";
-import { useEffect, useState } from "preact/hooks";
+import { useEffect } from "preact/hooks";
 import { useStore } from "@nanostores/preact";
 import { socketStatus } from "../store/socketStatus";
 
 const useConnectSocket = () => {
   const $socketStatus = useStore(socketStatus);
+  console.log($socketStatus);
 
   useEffect(() => {
     if (!socketStatus.get().socket) {

@@ -11,6 +11,7 @@ const Chat = () => {
   const $socketStatus = useStore(socketStatus);
   const { isConnected } = useConnectSocket();
   const [message, setMessage] = useState<string>("");
+  console.log($currentStatus, $messagesStatus, $socketStatus)
 
   const fetchMessagesFromRoom = async (room: string) => {
     const response = await fetch(`http://localhost:3000/${room}/messages/`);

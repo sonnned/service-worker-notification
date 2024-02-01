@@ -19,6 +19,7 @@ const JoinRoomForm = () => {
   const $currentStatus = useStore(currentStatus);
   const $messagesStatus = useStore(messagesStatus);
   const { isConnected } = useConnectSocket();
+  console.log($socketStatus, $currentStatus, $messagesStatus);
 
   const change = (e: Event) => {
     const target = e.target as HTMLInputElement;
