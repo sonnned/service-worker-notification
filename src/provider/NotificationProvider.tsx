@@ -50,7 +50,10 @@ const NotificationProvider = ({ children }: Notification) => {
     Notification.requestPermission((result) => {
       if (result === 'granted') {
         navigator.serviceWorker.ready.then((registration) => {
-          registration.showNotification('Hello, World!');
+          registration.showNotification('Hello, World!', {
+            vibrate: [200, 100, 200, 100, 200, 100, 200],
+            body: 'New notification from your PWA!',
+          });
         });
       }
     })
