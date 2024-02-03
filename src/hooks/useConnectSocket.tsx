@@ -5,7 +5,7 @@ import { socketStatus } from "../store/socketStatus";
 
 const useConnectSocket = () => {
   const $socketStatus = useStore(socketStatus);
-  console.log($socketStatus);
+  // console.log($socketStatus);
 
   useEffect(() => {
     if (!socketStatus.get().socket) {

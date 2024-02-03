@@ -1,90 +1,52 @@
-import { type ReactNode, useEffect } from "preact/compat";
-// import { messaging } from "../firebase";
-// import { getToken, onMessage } from "firebase/messaging";
-// import { messaging } from "../firebase";
-// import { getToken } from "firebase/messaging";
-// import { useStore } from "@nanostores/preact";
-import { currentStatus } from "../store/currentStatus";
+import { type ReactNode, useEffect, useRef } from "preact/compat";
+import useConnectSocket from "../hooks/useConnectSocket";
+import { useStore } from "@nanostores/preact";
+import { socketStatus } from "../store/socketStatus";
 
 interface Notification {
   children: ReactNode;
 }
 
 const NotificationProvider = ({ children }: Notification) => {
-  // const $currentStatus = useStore(currentStatus);
+  const $socketStatus = useStore(socketStatus);
+  const { isConnected } = useConnectSocket();
+  const audioUrl = "/sounds/notification.mp3";
+  const audioRef = useRef<HTMLAudioElement>(null);
 
-  // const requestPermission = async () => {
-  //   console.log("Requesting permission...");
-  //   if (Notification.permission === "granted") {
-  //     console.log("Permission granted.");
-  //     return getToken(messaging, {
-  //       vapidKey: "BPBuppg0evzZutUL4I6SyROk2byA4IJBEFXcfIaVIvdZnv4rciuL8SC5DZBiknDtWeqz6FqY-aMHmb3KlF0yN2Q"
-  //     }).then((currentToken) => {
-  //       if (currentToken) {
-  //         console.log("Token: ", currentToken);
-  //         currentStatus.set({
-  //           ...$currentStatus,
-  //           notificationToken: currentToken
-  //         })
-  //       } else {
-  //         console.log("No registration token available. Request permission to generate one.");
-  //       }
-  //     }).catch((err) => {
-  //       console.log("An error occurred while retrieving token. ", err);
-  //     });
-  //   }
-  // }
-
-  useEffect(() => {
-    // requestPermission()
-
-    // const unsubscribe = onMessageListener().then(payload => {
-    //   console.log("payload", payload)
-    // });
-
-    // return () => {
-    //   unsubscribe.catch(() => console.log("err"))
-    // }
-
-    navigator.serviceWorker.register('sw.js');
-    Notification.requestPermission((result) => {
-      if (result === 'granted') {
+  const serviceWorker = ({ title, body }: { title: string; body: string }) => {
+    navigator.serviceWorker.register("sw.js");
+    return Notification.requestPermission((result) => {
+      if (result === "granted") {
+        if (audioRef.current) {
+          console.log("play");
+          audioRef.current.play();
+        }
         navigator.serviceWorker.ready.then((registration) => {
-          registration.showNotification('Hello, World!', {
+          registration.showNotification(title, {
             vibrate: [200, 100, 200, 100, 200, 100, 200],
-            body: 'New notification from your PWA!',
+            body,
           });
         });
       }
-    })
-  }, [])
+    });
+  };
 
   useEffect(() => {
-    // if (currentStatus.get().notificationToken) {
-    //   fetch(`https://fcm.googleapis.com//v1/projects/usatags/messages:send`, {
-    //     method: "POST",
-    //     body: JSON.stringify({
-    //       message: {
-    //         // token: currentStatus.get().notificationToken,
-    //         topic: "all",
-    //         notification: {
-    //           title: "Hello",
-    //           body: "World"
-    //         }
-    //       }
-    //     }),
-    //     headers: {
-    //       ContentType: "application/json",
-    //       Authorization: `Bearer ${import.meta.env.VITE_FIREBASE_MESSAGING_SERVER_KEY}`
-    //     }
-    //   }).then(response => {
-    //       console.log("response", response)
-    //     })
-    // }
-  }, [currentStatus.get().notificationToken])
+    if (isConnected) {
+      socketStatus
+        .get()
+        .socket?.on(
+          "notification",
+          ({ title, body }: { title: string; body: string }) => {
+            serviceWorker({ title, body });
+          }
+        );
+    }
+  }, [isConnected]);
 
   return (
     <body class="bg-gray-100 text-neutral-900 font-sans antialiased">
+      <audio ref={audioRef} autoPlay={true} src={audioUrl} muted={false}></audio>
       {children}
     </body>
   );

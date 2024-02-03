@@ -6,6 +6,10 @@ interface CurrentStatus {
   active: boolean;
   socketId?: string;
   notificationToken: string;
+  email: string;
+  phone_number: string;
+  image: string;
+  id: string;
 };
 
 export const currentStatus = atom<CurrentStatus>({
@@ -14,4 +18,8 @@ export const currentStatus = atom<CurrentStatus>({
   active: false,
   socketId: '',
   notificationToken: '',
+  email: '',
+  phone_number: '',
+  image: '',
+  id: '',
 });

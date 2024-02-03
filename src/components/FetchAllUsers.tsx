@@ -14,6 +14,8 @@ interface UserActiveProps {
   username: string;
   socketId: string;
   active: boolean;
+  email: string;
+  id: string;
 }
 
 const FetchAllUsers = () => {
@@ -21,7 +23,7 @@ const FetchAllUsers = () => {
   const $socketStatus = useStore(socketStatus);
   const $currentStatus = useStore(currentStatus);
   const { isConnected } = useConnectSocket();
-  console.log($allUsersStatus, $socketStatus, $currentStatus);
+  // console.log($allUsersStatus, $socketStatus, $currentStatus);
 
   const fetchAllUsers = async () => {
     const response = await fetch("http://localhost:3000/users");
@@ -48,6 +50,7 @@ const FetchAllUsers = () => {
           "update-socket-id",
           ({ oldSocketId, newSocketId }: UpdateSocketIdProps) => {
             const users = allUsersStatus.get().users?.map((user: User) => {
+              console.log(user, oldSocketId, newSocketId);
               if (user.socketId === oldSocketId) {
                 currentStatus.set({
                   ...currentStatus.get(),
@@ -76,14 +79,20 @@ const FetchAllUsers = () => {
         .get()
         .socket?.on(
           "user-active",
-          ({ username, socketId, active }: UserActiveProps) => {
-            currentStatus.set({
-              ...currentStatus.get(),
-              socketId,
+          ({         username,
+            socketId,
+            active,
+            email,
+            id }: UserActiveProps) => {
+            // console.log(username, socketId, active);
+            // console.log('allUsersStatus.get()', allUsersStatus.get());
+            console.log({
               username,
+              socketId,
               active,
-            });
-
+              email,
+              id,
+            })
             allUsersStatus.set({
               ...allUsersStatus.get(),
               users: [
