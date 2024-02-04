@@ -2,6 +2,7 @@ import { type ReactNode, useEffect, useRef } from "preact/compat";
 import useConnectSocket from "../hooks/useConnectSocket";
 import { useStore } from "@nanostores/preact";
 import { socketStatus } from "../store/socketStatus";
+import { currentStatus } from "../store/currentStatus";
 
 interface Notification {
   children: ReactNode;
@@ -9,6 +10,7 @@ interface Notification {
 
 const NotificationProvider = ({ children }: Notification) => {
   const $socketStatus = useStore(socketStatus);
+  const $currentStatus = useStore(currentStatus);
   const { isConnected } = useConnectSocket();
   const audioUrl = "/sounds/notification.mp3";
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -33,20 +35,22 @@ const NotificationProvider = ({ children }: Notification) => {
 
   useEffect(() => {
     if (isConnected) {
-      socketStatus
+      if (currentStatus.get().id) {
+        socketStatus
         .get()
         .socket?.on(
-          "notification",
+          `notification-${currentStatus.get().id}`,
           ({ title, body }: { title: string; body: string }) => {
             serviceWorker({ title, body });
           }
         );
+      }
     }
-  }, [isConnected]);
+  }, [isConnected, currentStatus.get().id]);
 
   return (
     <body class="bg-gray-100 text-neutral-900 font-sans antialiased">
-      <audio ref={audioRef} autoPlay={true} src={audioUrl} muted={false}></audio>
+      <audio ref={audioRef} autoPlay={false} src={audioUrl} muted={false}></audio>
       {children}
     </body>
   );

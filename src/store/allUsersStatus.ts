@@ -1,9 +1,14 @@
 import { atom } from 'nanostores';
 
 export interface User {
+  id: string;
   username: string;
-  socketId: string;
+  email: string;
+  phone_number: string;
+  image: string;
   active: boolean;
+  socketId: string;
+  admin: boolean;
 }
 
 interface AllUsersStatus {

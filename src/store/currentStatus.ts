@@ -10,6 +10,7 @@ interface CurrentStatus {
   phone_number: string;
   image: string;
   id: string;
+  admin: boolean;
 };
 
 export const currentStatus = atom<CurrentStatus>({
@@ -22,4 +23,5 @@ export const currentStatus = atom<CurrentStatus>({
   phone_number: '',
   image: '',
   id: '',
+  admin: false,
 });

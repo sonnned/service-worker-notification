@@ -1,9 +1,11 @@
 import { atom } from "nanostores";
 
 export interface MessageStatus {
-  message: string;
-  username: string;
-  room: string;
+  content: string;
+  content_type: string;
+  conversation_id: string;
+  sender_id: string;
+  id: string;
 };
 
 interface MessagesStatus {
